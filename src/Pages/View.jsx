@@ -3,6 +3,7 @@ import { Button} from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { addToWishlist } from '../Slices/wishlistSlice'
+import { addtoCart } from '../Slices/cartSlice'
 
 
 function View() {
@@ -41,7 +42,7 @@ function View() {
         <p style={{textAlign:'justify'}}><span className='fw-bolder'>Description:</span>{product?.description}</p>
         <div className='d-flex justify-content-between mt-4'>
         <Button onClick={()=>handleWishlist(product)} className='btn btn-outline-dark fs-5'><i className="fa-solid fa-heart text-danger"></i>Wishlist</Button>
-        <Button className='btn btn-outline-dark fs-5'><i className="fa-solid fa-cart-plus text-success"></i>Cart</Button>
+        <Button onClick={()=>dispatch(addtoCart(product))} className='btn btn-outline-dark fs-5'><i className="fa-solid fa-cart-plus text-success"></i>Cart</Button>
         </div>
     </div>
 </div>}

@@ -1,12 +1,28 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { Link, useNavigate } from 'react-router-dom'
+import { emptyCart, removeCart } from '../Slices/cartSlice'
 
 
 
 
 function Cart() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     const cart = useSelector(state=>state.cartReducer)
+    const[ cartAmount, setCartAmount] = useState(0)
+    useEffect(()=>{
+        if(cart?.length>0){
+            setCartAmount(cart?.map(product=>product?.totalPrice).reduce((p1,p2)=>p1+p2))
+        }else{
+            setCartAmount(0)
+        }
+    },[cart])
+    const handleCheckout =()=>{
+        alert("Your order has successfully placed... Thankyou for Purchasing with us!!!")
+        dispatch(emptyCart())
+        navigate('/')
+    }
   return (
     <div className='container mt-5'>
       {cart?.length>0?  <div className="row mt-5">
@@ -19,6 +35,7 @@ function Cart() {
                             <th>Product</th>
                             <th>Image</th>
                             <th>Price</th>
+                            <th>Quantity</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -28,20 +45,25 @@ function Cart() {
                             <td>{index+1}</td>
                             <td>{product.title}</td>
                             <td><img style={{height:'60px',width:'60px'}} src={product.thumbnail}alt="" /></td>
-                            <td>$ {product.price}</td>
-                            <td><button className='btn'><i className="fa-solid fa-trash text-danger"></i></button></td>
+                            <td><input style={{width:'45px'}} className='form-control' type="text" value={product.quantity} readOnly /></td>
+                            <td>$ {product.totalPrice}</td>
+                            <td><button onClick={()=>dispatch(removeCart(product.id))} className='btn'><i className="fa-solid fa-trash text-danger"></i></button></td>
                         </tr>
                         ))}
                     </tbody>
                 </table>
+                <div className="float-end mb-5">
+                    <button onClick={()=>dispatch(emptyCart())} className='btn btn-danger me-3'>Empty Cart</button>
+                    <Link to={'/'} className='btn btn-primary'>Shop More</Link>
+                </div>
             </div>
             <div style={{marginBottom:'50px'}} className="col-lg-4 mt-5">
                 <div className="shadow border rounded p-4">
-                    <h5>Total Product: <span>3</span></h5>
-                    <h1>Total Amount: <span className='fw-bolder text-danger'>$ 560</span></h1>
+                    <h5>Total Products: <span>{cart?.length}</span></h5>
+                    <h1>Total Amount: <span className='fw-bolder text-danger'>$ {cartAmount}</span></h1>
                     <hr />
                     <div className="d-grid">
-                        <button className='btn btn-success'>Checkout</button>
+                        <button onClick={()=>(handleCheckout())} className='btn btn-success'>Checkout</button>
                     </div>
                 </div>
             </div>
