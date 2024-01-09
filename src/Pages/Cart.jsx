@@ -24,6 +24,13 @@ function Cart() {
         dispatch(emptyCart())
         navigate('/')
     }
+    const handleDecrementCart = (product)=>{
+        if(product.quantity==1){
+            dispatch(removeCart(product.id))
+        }else{
+            dispatch(decQuantity(product))
+        }
+    }
   return (
  <>
  <Header/>
@@ -49,7 +56,7 @@ function Cart() {
                                 <td>{product.title}</td>
                                 <td><img style={{height:'60px',width:'60px'}} src={product.thumbnail}alt="" /></td>
                                 <td><div className='d-flex'>
-                                    <button onClick={()=>dispatch(decQuantity(product))}  className='btn fw-bolder'>-</button>
+                                    <button onClick={()=>handleDecrementCart(product)}  className='btn fw-bolder'>-</button>
                                     <input style={{width:'45px'}} className='form-control' type="text" value={product.quantity} readOnly />
                                     <button onClick={()=>dispatch(incQuantity(product))} className='btn fw-bolder'>+</button>
                                     </div>
